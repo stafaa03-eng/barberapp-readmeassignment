@@ -115,10 +115,8 @@ Barber updates availability in the app → API verifies session → writes sched
 
 ---
 
-## Architecture
-Required for this assignment. Reuse your diagram.
 
-![Architecture diagram](assets/architecture.png "System containers and flows")
+![Architecture diagram](assets/techcomdiagram.drawio.png "System containers and flows")
 
 **Components**
 - Website: React on Vercel  
