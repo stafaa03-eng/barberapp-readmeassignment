@@ -17,7 +17,7 @@
 - [Usage Examples](#usage-examples)
 - [Dependencies](#dependencies)
 - [FAQ](#faq)
-- [License & Contribution](#license--contribution)
+
 
 ---
 
