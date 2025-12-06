@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logoreal.png" alt="BarberApp logo" width="250">
+  <img src="assets/logoreal.png" alt="BarberApp logo" width="320">
 </p>
 
 <h1 align="center">BarberApp</h1>
@@ -34,26 +34,22 @@ UI lives in `app/`. Mock data and helpers are in `libs/`.
 ## Quickstart
 > **Requirements:** Node 18+, npm, Expo CLI (`npm i -g expo`), a Clerk publishable key, optional Supabase project for image uploads.
 
-1. **Clone**
+    # 1. Clone the repository
+    git clone https://github.com/<your-username>/<repo-name>.git
+    cd <repo-name>
 
-        git clone https://github.com/<your-username>/<repo-name>.git
-        cd <repo-name>
+    # 2. Configure environment variables (create .env in repo root)
+    EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pk
+    EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+    EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-2. **Configure environment variables** (create `.env` in repo root)
+    # 3. Install dependencies
+    npm install
 
-        EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pk
-        EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-        EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-3. **Install and run**
-
-        npm install
-        npm run web
-
-4. **Open the app**
-
-        # If not auto-opened:
-        http://localhost:19006
+    # 4. Run the app
+    npm run web
+    # If not auto-opened:
+    # http://localhost:19006
 
 ---
 
@@ -62,8 +58,9 @@ UI lives in `app/`. Mock data and helpers are in `libs/`.
 **User App Demo**  
 Shows a barber editing availability, updating profile details, and seeing changes reflected in the schedule and profile screens.
 
-<br>
-<img src="assets/appdemo.gif" alt="User app demo showing schedule and profile features" height="600">
+<p align="center">
+  <img src="assets/appdemo.gif" alt="User app demo showing schedule and profile features" width="320">
+</p>
 
 ---
 
