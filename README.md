@@ -94,7 +94,7 @@ Configured as `legendsapp` in `app.json`.
 
 ### 1. System Architecture
 
-![Architecture diagram](assets/techcomdiagram.drawio.png "Expo app, Clerk auth, optional Supabase storage/logs; mock data layer")
+![Architecture diagram](assets/techcomdiagramd.drawio.png "Expo app, Clerk auth, optional Supabase storage/logs; mock data layer")
 
 **Components**
 - **App UI**
