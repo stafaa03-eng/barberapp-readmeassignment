@@ -1,105 +1,112 @@
 <p align="center">
-  <img src="assets/logoreal.png" alt="BarberApp logo" width="720">
+  <img src="assets/logoreal.png" alt="BarberApp logo" width="250">
 </p>
 
 <h1 align="center">BarberApp</h1>
-<p align="center">Scheduling and client management for barbers. Expo app for barbers with an optional front-desk tablet flow.</p>
+<p align="center">Scheduling and client management for barbers. <br> An Expo app for barbers with an optional front-desk tablet flow.</p>
 
 ---
 
 ## Table of Contents
 - [Overview](#overview)
-- [Demos](#demos)
 - [Quickstart](#quickstart)
+- [Demos](#demos)
 - [Configuration](#configuration)
 - [Features](#features)
-- [Architecture](#architecture)
+- [Architecture & Logic](#architecture--logic)
 - [Usage Examples](#usage-examples)
 - [Dependencies](#dependencies)
 - [FAQ](#faq)
+- [License & Contribution](#license--contribution)
 
 ---
 
 ## Overview
 BarberApp includes:
-- Expo mobile app for barbers to manage schedules, clients, and profile.
-- Front-desk tablet flow with PIN.
-- Mock data out of the box. Optional Supabase storage for images. Clerk auth screens included.
+- **Barber Interface:** Expo mobile app for barbers to manage schedules, clients, and profile.
+- **Shop Interface:** Front-desk tablet flow with PIN.
+- **Data:** Mock data out of the box. Optional Supabase storage for images. Clerk auth screens included.
 
 UI lives in `app/`. Mock data and helpers are in `libs/`.
 
 ---
 
-## Demos
-Developer Quickstart  
-![Developer setup demo](assets/devsidegif.gif "GIF: terminal runs expo start, app loads")
-
-User App Demo  
-![User app demo](assets/appdemo.gif "GIF: edit schedule and profile, save, see updates")
-
----
-
 ## Quickstart
-> Requirements: Node 18+, npm, Expo CLI (`npm i -g expo`), a Clerk publishable key, optional Supabase project for image uploads.
+> **Requirements:** Node 18+, npm, Expo CLI (`npm i -g expo`), a Clerk publishable key, optional Supabase project for image uploads.
 
-1) Clone
+1. **Clone**
 ```bash
-git clone https://github.com/<your-username>/<repo-name>.git
+git clone [https://github.com/](https://github.com/)<your-username>/<repo-name>.git
 cd <repo-name>
 ```
 
-2) Configure environment variables (create `.env` in repo root)
+2. **Configure environment variables** (create `.env` in repo root)
 ```bash
 EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pk
 EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-3) Install and run
+3. **Install and run**
 ```bash
 npm install
 npm run web
 ```
 
-4) Open the app
+4. **Open the app**
 ```bash
 # If not auto-opened:
-http://localhost:19006
+http://localhost:8081
 ```
 
 ---
 
+## Demos
+
+**User App Demo**
+<br>
+<img src="assets/appdemo.gif" alt="User app demo showing schedule and profile features" height="600">
+
+---
+
 ## Configuration
-**Clerk**  
+**Clerk**
 Set `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`. Auth screens are in `app/(auth)`. Protected routes are in `app/(protected)`.
 
-**Supabase**  
+**Supabase**
 Set `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` to enable image uploads in the Profile screen. See `libs/supabase.ts` and `libs/storage.ts`.
 
-**Deep link scheme**  
+**Deep link scheme**
 Configured as `legendsapp` in `app.json`.
 
 ---
 
 ## Features
-- Schedule: view day, add appointments, detect overlaps, cancel or retime.
-- Requests: accept or reject incoming requests with conflict checks.
-- Clients: searchable list with per-client private notes.
-- Profile: display name, bio, avatar, specialties, before/after gallery, social links.
-- Front-desk tablet: PIN gate and day view.
-- Auth: Clerk email/password and Google SSO.
-- Storage: optional Supabase Storage for images.
+- **Schedule:** view day, add appointments, detect overlaps, cancel or retime.
+- **Requests:** accept or reject incoming requests with conflict checks.
+- **Clients:** searchable list with per-client private notes.
+- **Profile:** display name, bio, avatar, specialties, before/after gallery, social links.
+- **Front-desk tablet:** PIN gate and day view.
+- **Auth:** Clerk email/password and Google SSO.
+- **Storage:** optional Supabase Storage for images.
 
 ---
 
-## Architecture
+## Architecture & Logic
+
+### 1. System Architecture
 ![Architecture diagram](assets/techcomdiagram.drawio.png "Expo app, Clerk auth, optional Supabase storage/logs; mock data layer")
 
 **Components**
-- App UI: Expo Router screens in `app/`
-- Auth: Clerk provider in `app/_layout.tsx`
-- Data layer: mock data in `libs/mock.ts`, session helpers in `libs/session.ts`
-- Optional persistence: Supabase client in `libs/supabase.ts`, uploads in `libs/storage.ts`, profile helpers in `libs/db.ts`
+- **App UI:** Expo Router screens in `app/`
+- **Auth:** Clerk provider in `app/_layout.tsx`
+- **Data layer:** mock data in `libs/mock.ts`, session helpers in `libs/session.ts`
+- **Optional persistence:** Supabase client in `libs/supabase.ts`, uploads in `libs/storage.ts`, profile helpers in `libs/db.ts`
+
+### 2. Booking Logic Flow
+![Booking Logic Diagram](assets/booking_flow.png "Flowchart showing: New Request -> Check Overlap -> If Conflict: Alert User -> If Safe: Write to Schedule")
+
+* **Conflict Detection:** The app calculates `start_time` + `service_duration` to ensure no overlapping blocks exist before committing to the schedule.
 
 ---
 
@@ -169,14 +176,20 @@ Full list in `package.json`.
 
 ## FAQ
 
-**Does this require a backend?**  
+**Does this require a backend?**
 No for a demo. Mock data works out of the box. Supabase enables image uploads and logging.
 
-**Do I need Clerk to run it?**  
+**Do I need Clerk to run it?**
 Yes for protected routes. You can relax guards for a mock demo if needed.
 
-**How do I run web vs native?**  
+**How do I run web vs native?**
 Use `npm run web` for web. Use Expo Go or `npm run ios` / `npm run android` for native.
 
-**How do I add a service or barber?**  
+**How do I add a service or barber?**
 Edit `SERVICES` and `BARBERS` in `libs/mock.ts`.
+
+---
+
+## License & Contribution
+This project is open-source and available under the **MIT License**.
+Contributions are welcome! Please fork the repository and submit a pull request for review.
