@@ -199,3 +199,5 @@ Use `npm run web` for web. Use Expo Go or `npm run ios` / `npm run android` for 
 
 **How do I add a service or barber?**  
 Edit `SERVICES` and `BARBERS` in `libs/mock.ts`.
+
+---
