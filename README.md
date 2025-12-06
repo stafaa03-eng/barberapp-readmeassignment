@@ -35,48 +35,47 @@ UI lives in `app/`. Mock data and helpers are in `libs/`.
 > **Requirements:** Node 18+, npm, Expo CLI (`npm i -g expo`), a Clerk publishable key, optional Supabase project for image uploads.
 
 1. **Clone**
-```bash
-git clone [https://github.com/](https://github.com/)<your-username>/<repo-name>.git
-cd <repo-name>
-```
+
+        git clone https://github.com/<your-username>/<repo-name>.git
+        cd <repo-name>
 
 2. **Configure environment variables** (create `.env` in repo root)
-```bash
-EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pk
-EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+
+        EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pk
+        EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+        EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 3. **Install and run**
-```bash
-npm install
-npm run web
-```
+
+        npm install
+        npm run web
 
 4. **Open the app**
-```bash
-# If not auto-opened:
-http://localhost:8081
-```
+
+        # If not auto-opened:
+        http://localhost:19006
 
 ---
 
 ## Demos
 
-**User App Demo**
+**User App Demo**  
+Shows a barber editing availability, updating profile details, and seeing changes reflected in the schedule and profile screens.
+
 <br>
 <img src="assets/appdemo.gif" alt="User app demo showing schedule and profile features" height="600">
 
 ---
 
 ## Configuration
-**Clerk**
+
+**Clerk**  
 Set `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`. Auth screens are in `app/(auth)`. Protected routes are in `app/(protected)`.
 
-**Supabase**
+**Supabase**  
 Set `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` to enable image uploads in the Profile screen. See `libs/supabase.ts` and `libs/storage.ts`.
 
-**Deep link scheme**
+**Deep link scheme**  
 Configured as `legendsapp` in `app.json`.
 
 ---
@@ -95,79 +94,93 @@ Configured as `legendsapp` in `app.json`.
 ## Architecture & Logic
 
 ### 1. System Architecture
+
 ![Architecture diagram](assets/techcomdiagram.drawio.png "Expo app, Clerk auth, optional Supabase storage/logs; mock data layer")
 
 **Components**
-- **App UI:** Expo Router screens in `app/`
-- **Auth:** Clerk provider in `app/_layout.tsx`
-- **Data layer:** mock data in `libs/mock.ts`, session helpers in `libs/session.ts`
-- **Optional persistence:** Supabase client in `libs/supabase.ts`, uploads in `libs/storage.ts`, profile helpers in `libs/db.ts`
+- **App UI**
+  - Expo Router screens in `app/`
+  - Stacked layouts for `(auth)` vs `(protected)` routes
+- **Auth**
+  - Clerk provider in `app/_layout.tsx`
+  - Session-aware guards in `app/(protected)/_layout.tsx`
+- **Data layer**
+  - Mock data in `libs/mock.ts`
+  - Session helpers in `libs/session.ts`
+- **Optional persistence**
+  - Supabase client in `libs/supabase.ts`
+  - Upload helpers in `libs/storage.ts`
+  - Profile helpers in `libs/db.ts` (e.g., storing profile and gallery metadata)
+
+The default path uses only the mock data layer so the app runs without any backend configured. Supabase can be enabled later for storing images and logs without changing the UI layer.
 
 ### 2. Booking Logic Flow
+
 ![Booking Logic Diagram](assets/booking_flow.png "Flowchart showing: New Request -> Check Overlap -> If Conflict: Alert User -> If Safe: Write to Schedule")
 
-* **Conflict Detection:** The app calculates `start_time` + `service_duration` to ensure no overlapping blocks exist before committing to the schedule.
+- **Conflict Detection:**  
+  For each new appointment, the app calculates `start_time + service_duration` and compares against existing appointments. If any time ranges overlap, the barber is warned before double-booking.
 
 ---
 
 ## Usage Examples
 
 **Protect routes with Clerk**
-```tsx
-// app/(protected)/_layout.tsx
-import { Stack, Redirect } from "expo-router"
-import { useAuth } from "@clerk/clerk-expo"
 
-export default function ProtectedLayout() {
-  const { isSignedIn, isLoaded } = useAuth()
-  if (!isLoaded) return null
-  if (!isSignedIn) return <Redirect href="/(auth)/sign-in" />
-  return <Stack screenOptions={{ headerShown: false }} />
-}
-```
+    // app/(protected)/_layout.tsx
+    import { Stack, Redirect } from "expo-router"
+    import { useAuth } from "@clerk/clerk-expo"
+
+    export default function ProtectedLayout() {
+      const { isSignedIn, isLoaded } = useAuth()
+      if (!isLoaded) return null
+      if (!isSignedIn) return <Redirect href="/(auth)/sign-in" />
+      return <Stack screenOptions={{ headerShown: false }} />
+    }
 
 **Add appointment with overlap check**
-```tsx
-// simplified from schedule screen
-const conflicts = existing.filter(a => {
-  const aStart = toMin(a.start_time)
-  const aEnd = aStart + totalDurationMin(a.service_names)
-  return newStart < aEnd && aStart < newEnd
-})
-if (conflicts.length) {
-  Alert.alert("Possible overlap", "Proceed?", [
-    { text: "Cancel" },
-    { text: "Book anyway", onPress: () => onSubmit(payload) },
-  ])
-} else {
-  onSubmit(payload)
-}
-```
+
+    // simplified from schedule screen
+    const conflicts = existing.filter(a => {
+      const aStart = toMin(a.start_time)
+      const aEnd = aStart + totalDurationMin(a.service_names)
+      return newStart < aEnd && aStart < newEnd
+    })
+    if (conflicts.length) {
+      Alert.alert("Possible overlap", "Proceed?", [
+        { text: "Cancel" },
+        { text: "Book anyway", onPress: () => onSubmit(payload) },
+      ])
+    } else {
+      onSubmit(payload)
+    }
 
 **Upload image to Supabase Storage**
-```ts
-// libs/storage.ts (excerpt)
-export async function uploadImageFromUri(uri?: string, folder?: string, name?: string) {
-  if (!uri || !folder) return undefined
-  if (/^https?:\/\//i.test(uri)) return uri
-  // read local file, upload bytes, return public URL
-}
-```
+
+    // libs/storage.ts (excerpt)
+    export async function uploadImageFromUri(uri?: string, folder?: string, name?: string) {
+      if (!uri || !folder) return undefined
+      if (/^https?:\/\//i.test(uri)) return uri
+      // read local file, upload bytes, return public URL
+    }
 
 **Toast feedback**
-```tsx
-// app/providers/ToastProvider.tsx (usage)
-const { showToast } = useToast()
-showToast({ type: "success", title: "Profile saved" })
-```
+
+    // app/providers/ToastProvider.tsx (usage)
+    const { showToast } = useToast()
+    showToast({ type: "success", title: "Profile saved" })
 
 ---
 
 ## Dependencies
-- expo `~53.x`, react-native `0.79.x`, expo-router `^5.x`
+- expo `~53.x`
+- react-native `0.79.x`
+- expo-router `^5.x`
 - @clerk/clerk-expo
 - @supabase/supabase-js
-- expo-image-picker, expo-secure-store, expo-web-browser
+- expo-image-picker
+- expo-secure-store
+- expo-web-browser
 - lucide-react-native
 
 Full list in `package.json`.
@@ -176,20 +189,26 @@ Full list in `package.json`.
 
 ## FAQ
 
-**Does this require a backend?**
+**Does this require a backend?**  
 No for a demo. Mock data works out of the box. Supabase enables image uploads and logging.
 
-**Do I need Clerk to run it?**
-Yes for protected routes. You can relax guards for a mock demo if needed.
+**Do I need Clerk to run it?**  
+Yes for protected routes. You can relax guards in `(protected)` layouts for a mock demo if needed.
 
-**How do I run web vs native?**
+**How do I run web vs native?**  
 Use `npm run web` for web. Use Expo Go or `npm run ios` / `npm run android` for native.
 
-**How do I add a service or barber?**
+**How do I add a service or barber?**  
 Edit `SERVICES` and `BARBERS` in `libs/mock.ts`.
 
 ---
 
 ## License & Contribution
-This project is open-source and available under the **MIT License**.
-Contributions are welcome! Please fork the repository and submit a pull request for review.
+
+This project was originally created as a course project and demo app.
+
+**License**  
+This project is open-source and available under the **MIT License**. See the `LICENSE` file in the repo for details.
+
+**Contributions**  
+Contributions are welcome. Fork the repository, create a feature branch, and open a pull request for review.
