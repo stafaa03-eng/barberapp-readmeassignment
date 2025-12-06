@@ -59,7 +59,9 @@ UI lives in `app/`. Mock data and helpers are in `libs/`.
 Shows a barber editing availability, updating profile details, and seeing changes reflected in the schedule and profile screens.
 
 <p align="center">
-  <img src="assets/appdemo.gif" alt="User app demo showing schedule and profile features" width="320">
+  <img src="assets/appdemo.gif" 
+       alt="User app demo showing schedule and profile features" 
+       style="width:300px; aspect-ratio:9/16; object-fit:cover; border-radius:12px;">
 </p>
 
 ---
